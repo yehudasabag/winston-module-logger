@@ -15,6 +15,7 @@ function initialize(logLevel = 'info') {
             })
         ]
     });
+    return logger;
 }
 
 class ModuleLogger {
@@ -43,6 +44,10 @@ class ModuleLogger {
 
     error(msg, ex, extraTags) {
         logger.error(msg, ex ? this._getTags(Object.assign({ stack: ex.stack}, extraTags)) : this._tags);
+    }
+
+    isDebug() {
+        return logger.transports[0].level === 'debug';
     }
 
 }
