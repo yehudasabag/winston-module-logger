@@ -1,0 +1,29 @@
+{
+  "name": "winston-module-logger",
+  "version": "1.0.0",
+  "description": "A simple winston wrapper for generating logger instance per module and log tags",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yehudasabag/winston-module-logger.git"
+  },
+  "keywords": [
+    "winston",
+    "wrapper",
+    "log",
+    "module",
+    "logging"
+  ],
+  "author": "Yehuda Sabag",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yehudasabag/winston-module-logger/issues"
+  },
+  "homepage": "https://github.com/yehudasabag/winston-module-logger#readme",
+  "dependencies": {
+    "winston": "^3.0.0"
+  }
+}
