@@ -2,7 +2,7 @@
   "name": "winston-module-logger",
   "version": "1.0.0",
   "description": "A simple winston wrapper for generating logger instance per module and log tags",
-  "main": "index.js",
+  "main": "./src/logger.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
