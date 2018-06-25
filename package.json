@@ -1,6 +1,6 @@
 {
   "name": "winston-module-logger",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A simple winston wrapper for generating logger instance per module and log tags",
   "main": "./src/logger.js",
   "scripts": {
