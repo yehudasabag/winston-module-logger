@@ -18,7 +18,7 @@
     "logging"
   ],
   "author": "Yehuda Sabag",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/yehudasabag/winston-module-logger/issues"
   },
