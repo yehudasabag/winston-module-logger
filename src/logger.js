@@ -4,7 +4,7 @@ const assert = require("assert");
 let logger;
 
 function initialize(logLevel = 'info') {
-    logger = new winston.Logger({
+    logger = winston.createLogger({
         transports: [
             new winston.transports.Console({
                 handleExceptions: true,
