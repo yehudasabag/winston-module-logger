@@ -52,5 +52,19 @@ log.error('aaa', new Error('my error'), {apiKey: '12345'});
 ```console
 {"moduleName":"MyModule","stack":"Error: my error\n    at Object.<anonymous> (/Users/yehuda/git/rest-api/logger.js:8:18)\n    at Module._compile (module.js:660:30)\n    at Object.Module._extensions..js (module.js:671:10)\n    at Module.load (module.js:573:32)\n    at tryModuleLoad (module.js:513:12)\n    at Function.Module._load (module.js:505:3)\n    at Module.require (module.js:604:17)\n    at require (internal/module.js:11:18)\n    at Object.<anonymous> (/Users/yehuda/git/rest-api/app.js:6:13)\n    at Module._compile (module.js:657:14)","apiKey":"12345","level":"error","message":"aaa"}
 ```
+## Adding error and warning hooks
+You can add a dummy 'middleware' to the error and warn logs. This is mainly for the purpose of adding some functionality 
+on error and warnings such as incrementing a prometheus gauge or something like this.
+For performance reasons you can add only one middleware to the error and warn log functions.
+The logger assumes there is no dependency in the middleware function and does not 'await' for it.  
+
+To add a middleware:
+```js
+log.addLogMiddleware('error', () => { /*... do something */ })
+ ```
+ To remove a middleware:
+ ```js
+ log.clearLogMiddleware('error');
+ ```
 ## Contributions
 You are welcome to open PRs
