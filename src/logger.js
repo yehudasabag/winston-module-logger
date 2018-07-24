@@ -18,6 +18,24 @@ function initialize(logLevel = 'info') {
     return logger;
 }
 
+let logMiddleware = { error: null, warn: null };
+
+function addGlobalLogMiddleware(logLevel, middleware) {
+    assert(logLevel === 'error' || logLevel === 'warn', 'only "error" and "warn" levels supported');
+    assert(logMiddleware[logLevel] === null, 'You cannot add more than one middleware per logLevel, ' +
+        'you should call "clearLogMiddleware before to add the new one');
+    logMiddleware[logLevel] = middleware;
+}
+
+function clearGlobalLogMiddleware(logLevel) {
+    logMiddleware[logLevel] = null;
+}
+
+function clearAllGlobalMiddlewares() {
+    logMiddleware.error = null;
+    logMiddleware.warn = null;
+}
+
 class ModuleLogger {
     constructor(tagsObj) {
         assert(logger, 'You must call init() before calling getLogger()');
@@ -48,6 +66,7 @@ class ModuleLogger {
     }
 
     warn(msg, extraTags) {
+        logMiddleware['warn'] && logMiddleware['warn']();
         this._logMiddlewares['warn'] && this._logMiddlewares['warn']();
         logger.warn(msg, this._getTags(extraTags));
     }
@@ -57,6 +76,7 @@ class ModuleLogger {
     }
 
     error(msg, ex, extraTags) {
+        logMiddleware['error'] && logMiddleware['error']();
         this._logMiddlewares['error'] && this._logMiddlewares['error']();
         logger.error(msg, ex ? this._getTags(Object.assign({ stack: ex.stack}, extraTags)) : this._tags);
     }
@@ -81,5 +101,8 @@ module.exports = {
      * @returns {ModuleLogger}
      */
     getLogger: generateLogger,
-    init: initialize
+    init: initialize,
+    addGlobalLogMiddleware: addGlobalLogMiddleware,
+    clearGlobalLogMiddleware: clearGlobalLogMiddleware,
+    clearAllGlobalMiddlewares: clearAllGlobalMiddlewares
 };

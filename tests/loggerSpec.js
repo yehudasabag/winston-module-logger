@@ -3,6 +3,7 @@ const assert = require('chai').assert;
 const sinon = require('sinon');
 
 describe('logger tests', function () {
+
     context('when initialized with debug level', function () {
         it('isDebug should return true', function () {
             logger.init('debug');
@@ -114,8 +115,6 @@ describe('logger tests', function () {
         });
         context('when previous middleware exist', function () {
             it('add should throw exception', function () {
-                const winston = logger.init();
-                const winstonError = sinon.spy(winston, 'error');
                 const log = logger.getLogger('m');
                 let errMiddleware = sinon.spy();
                 log.addLogMiddleware('error', errMiddleware);
@@ -126,6 +125,85 @@ describe('logger tests', function () {
 
             });
         })
+
+    });
+
+    describe('add/clear global middleware', function () {
+        let winston = null;
+        beforeEach(function () {
+            winston = logger.init();
+        });
+
+        afterEach(function () {
+            logger.clearAllGlobalMiddlewares();
+        });
+
+        it('add should add global middleware to every module logger created', function () {
+            // winston = logger.init();
+
+            let errGlobalMiddleware = sinon.spy();
+            logger.addGlobalLogMiddleware('error', errGlobalMiddleware);
+
+            const winstonError = sinon.spy(winston, 'error');
+            const log1 = logger.getLogger('m');
+
+            log1.error('msg');
+            assert.isTrue(winstonError.calledOnce, 'winston error method not called');
+            assert.isTrue(winstonError.calledWith('msg', {moduleName: 'm'}),
+                'winston params not expected');
+            assert.isTrue(errGlobalMiddleware.calledOnce, 'error middleware function was not called');
+
+            const log2 = logger.getLogger('m2');
+            log2.error('msg2');
+            assert.isTrue(winstonError.calledTwice, 'winston error method not called');
+            assert.isTrue(winstonError.calledWith('msg2', {moduleName: 'm2'}),
+                'winston params not expected');
+            assert.isTrue(errGlobalMiddleware.calledTwice, 'error middleware function was not called twice');
+
+        });
+
+        it('clear should clear global middleware to all loggers', function () {
+            // winston = logger.init();
+
+            let warnGlobalMiddleware = sinon.spy();
+            logger.addGlobalLogMiddleware('warn', warnGlobalMiddleware);
+
+            const log1 = logger.getLogger('m');
+
+            log1.warn('msg');
+            assert.isTrue(warnGlobalMiddleware.calledOnce, 'error middleware function was not called');
+
+            const log2 = logger.getLogger('m2');
+            log2.warn('msg2');
+            assert.isTrue(warnGlobalMiddleware.calledTwice, 'error middleware function was not called twice');
+
+            warnGlobalMiddleware.resetHistory();
+            logger.clearGlobalLogMiddleware('warn');
+
+            log1.warn('a');
+            log2.warn('b');
+
+            assert.isTrue(warnGlobalMiddleware.notCalled, 'global middleware called after clear');
+        });
+
+        context('when there is both global and module specific middleware', function () {
+            it('both should be called', function () {
+                // const winston = logger.init();
+
+                let errGlobalMiddleware = sinon.spy();
+                let errModuleMiddleware = sinon.spy();
+                logger.addGlobalLogMiddleware('error', errGlobalMiddleware);
+
+                const log = logger.getLogger('m');
+                log.addLogMiddleware('error', errModuleMiddleware);
+
+                log.error('msg');
+                assert.isTrue(errGlobalMiddleware.calledOnce, 'global middleware was not called once');
+                assert.isTrue(errModuleMiddleware.calledOnce, 'module middleware was not called once');
+
+            });
+
+        });
 
     });
 });
