@@ -22,6 +22,7 @@ class ModuleLogger {
     constructor(tagsObj) {
         assert(logger, 'You must call init() before calling getLogger()');
         this._tags = tagsObj;
+        this._logMiddlewares = { error: null, warn: null };
     }
 
     _getTags(extraTags) {
@@ -30,11 +31,24 @@ class ModuleLogger {
         }
         return this._tags;
     }
+
+    addLogMiddleware(logLevel, middleware) {
+        assert(logLevel === 'error' || logLevel === 'warn', 'only "error" and "warn" levels supported');
+        assert(this._logMiddlewares[logLevel] === null, 'You cannot add more than one middleware per logLevel, ' +
+            'you should call "clearLogMiddleware before to add the new one');
+        this._logMiddlewares[logLevel] = middleware;
+    }
+
+    clearLogMiddleware(logLevel) {
+        this._logMiddlewares[logLevel] = null;
+    }
+
     info(msg, extraTags) {
         logger.info(msg, this._getTags(extraTags));
     }
 
     warn(msg, extraTags) {
+        this._logMiddlewares['warn'] && this._logMiddlewares['warn']();
         logger.warn(msg, this._getTags(extraTags));
     }
 
@@ -43,6 +57,7 @@ class ModuleLogger {
     }
 
     error(msg, ex, extraTags) {
+        this._logMiddlewares['error'] && this._logMiddlewares['error']();
         logger.error(msg, ex ? this._getTags(Object.assign({ stack: ex.stack}, extraTags)) : this._tags);
     }
 
