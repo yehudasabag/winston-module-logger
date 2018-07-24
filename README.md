@@ -56,15 +56,31 @@ log.error('aaa', new Error('my error'), {apiKey: '12345'});
 You can add a dummy 'middleware' to the error and warn logs. This is mainly for the purpose of adding some functionality 
 on error and warnings such as incrementing a prometheus gauge or something like this.
 For performance reasons you can add only one middleware to the error and warn log functions.
-The logger assumes there is no dependency in the middleware function and does not 'await' for it.  
+The logger assumes there is no dependency in the middleware function and does not 'await' for it.
 
-To add a middleware:
+You can add the middleware both in the module logger level (the logger obtained by the getLogger method) or globally 
+for all the module loggers in the system.   
+
+To add a middleware on the module logger use the addLogMiddleware method of the module logger:
 ```js
-log.addLogMiddleware('error', () => { /*... do something */ })
+log.addLogMiddleware('error', () => { /*... do something */ });
  ```
- To remove a middleware:
+ To remove the middleware:
  ```js
  log.clearLogMiddleware('error');
+ ```
+ To add a global middleware to all the module loggers (whether they already exist or will be created later):
+ ```js
+const moduleLogger = require('winston-module-logger');
+moduleLogger.addGlobalLogMiddleware('error', () => {/* ... do something */});
+ ```
+ To clear the global middleware:
+ ```js
+moduleLogger.clearGlobalLogMiddleware('error'); 
+ ```
+ To clear all global middlewares:
+ ```js
+ moduleLogger.clearAllGlobalMiddlewares();
  ```
 ## Contributions
 You are welcome to open PRs
