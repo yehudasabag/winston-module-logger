@@ -1,17 +1,18 @@
-const winston = require('winston');
+const { createLogger, format, transports } = require('winston');
+const { combine, timestamp } = format;
 const assert = require("assert");
 
 let logger;
 
 function initialize(logLevel = 'info') {
-    logger = winston.createLogger({
+    logger = createLogger({
         transports: [
-            new winston.transports.Console({
-                handleExceptions: true,
-                json: true,
-                timestamp: true,
-                level: logLevel,
-                stringify: (obj) => JSON.stringify(obj)
+            new transports.Console({
+                format: combine(
+                    timestamp(),
+                    format.json()
+                ),
+                level: logLevel
             })
         ]
     });
