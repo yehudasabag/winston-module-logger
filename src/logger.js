@@ -46,7 +46,7 @@ class ModuleLogger {
 
     _getTags(extraTags) {
         if (extraTags){
-            return Object.assign(this._tags, extraTags);
+            return Object.assign({}, this._tags, extraTags);
         }
         return this._tags;
     }
