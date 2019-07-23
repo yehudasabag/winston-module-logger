@@ -79,7 +79,7 @@ class ModuleLogger {
     error(msg, ex, extraTags) {
         logMiddleware['error'] && logMiddleware['error']();
         this._logMiddlewares['error'] && this._logMiddlewares['error']();
-        logger.error(msg, ex ? this._getTags(Object.assign({ stack: ex.stack}, extraTags)) : this._tags);
+        logger.error(msg, ex ? this._getTags(Object.assign({ stack: ex.stack}, extraTags)) : this._getTags(extraTags));
     }
 
     isDebug() {
