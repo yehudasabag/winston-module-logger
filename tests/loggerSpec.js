@@ -206,6 +206,45 @@ describe('logger tests', function () {
         });
 
     });
+
+    describe('Logging objects', ()=>{
+        it('Stringifies the objects', ()=>{
+            const winston = logger.init('debug');
+            const log = logger.getLogger('test');
+
+            winston.info = sinon.spy();
+            winston.warn = sinon.spy();
+            winston.error = sinon.spy();
+
+            log.info('msg',{someKey: {someValue: 'value'}});
+            assert.equal(JSON.stringify(winston.info.args[0]), JSON.stringify([
+                "msg",
+                {
+                    "moduleName": "test",
+                    "someKey": "{\"someValue\":\"value\"}"
+                }
+            ]));
+
+
+            log.warn('msg',{someKey: {someValue: 'value'}});
+            assert.equal(JSON.stringify(winston.warn.args[0]), JSON.stringify([
+                "msg",
+                {
+                    "moduleName": "test",
+                    "someKey": "{\"someValue\":\"value\"}"
+                }
+            ]));
+
+            log.error('msg',null,{someKey: {someValue: 'value'}});
+            assert.equal(JSON.stringify(winston.error.args[0]), JSON.stringify([
+                "msg",
+                {
+                    "moduleName": "test",
+                    "someKey": "{\"someValue\":\"value\"}"
+                }
+            ]));
+        })
+    })
 });
 
 
