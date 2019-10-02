@@ -46,7 +46,13 @@ class ModuleLogger {
 
     _getTags(extraTags) {
         if (extraTags){
-            return Object.assign({}, this._tags, extraTags);
+            // Go over all values in extraTags and stringify them if they're objects
+            const extraTagsWithStringifiedObjects = Object.entries(extraTags).reduce((result, [key, value]) => ({
+                ...result,
+                [key]: typeof value === "object" ? JSON.stringify(value) : value
+            }), {});
+
+            return Object.assign({}, this._tags, extraTagsWithStringifiedObjects);
         }
         return this._tags;
     }
